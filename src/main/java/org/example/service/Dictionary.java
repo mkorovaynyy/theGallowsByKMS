@@ -1,4 +1,6 @@
-package org.example;
+package org.example.service;
+
+import org.example.exception.FileNotFoundExceptionInZip;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -10,8 +12,8 @@ import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-
-//Здесь эксперементирую, интересно было прочитать файлы, т.к. ранее не делал этого. Развивать идею
+//Создаем словарь - не очень уверен (или очень не уверен скорее даже), что класс верно спроектировал.
+//В классе эксперементирую, интересно было прочитать файлы из сети, т.к. ранее не делал этого. Развивать идею
 // и давать возможность сразу указать свой путь url не стал, хотя через сеттер и это возможно
 // Методы постарался разбить, учитывая логику: 1 метод = 1 действие
 
@@ -21,37 +23,43 @@ public class Dictionary {
 
 
     // парсим строку в словарь в виде List<String>
-    public List<String> getDictionary() throws IOException {
+    public List<String> getDictionary() throws IOException, FileNotFoundExceptionInZip {
         String line = getLineFromZipStream();
+        if (line.isEmpty()) {
+            throw new FileNotFoundExceptionInZip("Файл " + targetFileName + " не найден в архиве.");
+        }
         return Arrays.asList(line.split("\n"));
     }
+
     // скачиваем zip и упаковываем в стрим зипов
     private ZipInputStream downloadZipUrl() throws IOException {
-
-        URL url = new URL(zipUrlForDictionary);
-        try (InputStream inputStream = url.openStream()) {
+        try {
+            URL url = new URL(zipUrlForDictionary);
+            InputStream inputStream = url.openStream();
             return new ZipInputStream(inputStream);
+        } catch (IOException e) {
+            throw new IOException("Не удалось подключиться к URL: " + zipUrlForDictionary, e);
         }
     }
+
     // превращаем стрим зипов в строку
     private String getLineFromZipStream() throws IOException {
-        ZipEntry entry;
-        String fileContent = "";
-        while ((entry = downloadZipUrl().getNextEntry()) != null) {
-            if (entry.getName().equals(targetFileName)) {
-                try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-                    byte[] buffer = new byte[1024];
-                    int length;
-                    while ((length = downloadZipUrl().read(buffer)) > 0) {
-                        outputStream.write(buffer, 0, length);
-
+        try (ZipInputStream zipInputStream = downloadZipUrl()) {
+            ZipEntry entry;
+            while ((entry = zipInputStream.getNextEntry()) != null) {
+                if (entry.getName().equals(targetFileName)) {
+                    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                        byte[] buffer = new byte[1024];
+                        int length;
+                        while ((length = zipInputStream.read(buffer)) > 0) {
+                            outputStream.write(buffer, 0, length);
+                        }
+                        return outputStream.toString();
                     }
-                    fileContent = outputStream.toString();
-                    break;
                 }
             }
         }
-        return fileContent;
+        return ""; // Если файл не найден, возвращаем пустую строку
     }
 
     public String getZipUrlForDictionary() {
