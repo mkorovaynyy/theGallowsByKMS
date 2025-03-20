@@ -2,7 +2,6 @@ package org.example;
 
 
 import org.example.exception.FileNotFoundExceptionInZip;
-import org.example.model.Gallows;
 import org.example.service.Dictionary;
 
 import java.io.IOException;

@@ -14,11 +14,6 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-//Создаем словарь - не очень уверен (или очень не уверен скорее даже), что класс верно спроектировал.
-//В классе эксперементирую, интересно было прочитать файлы из сети, т.к. ранее не делал этого. Развивать идею
-// и давать возможность сразу указать свой путь url не стал, хотя через сеттер и это возможно
-// Методы постарался разбить, учитывая логику: 1 метод = 1 действие
-
 public class Dictionary {
     private String zipUrlForDictionary;
     private String targetFileName;
