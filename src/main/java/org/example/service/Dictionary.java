@@ -3,12 +3,14 @@ package org.example.service;
 import org.example.exception.FileNotFoundExceptionInZip;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -18,9 +20,18 @@ import java.util.zip.ZipInputStream;
 // Методы постарался разбить, учитывая логику: 1 метод = 1 действие
 
 public class Dictionary {
-    private String zipUrlForDictionary = "http://blog.kislenko.net/archives/8381.zip";
-    private String targetFileName = "singular.txt";
+    private String zipUrlForDictionary;
+    private String targetFileName;
 
+    // Конструктор, читающий параметры из конфигурационного файла
+    public Dictionary(String configFilePath) throws IOException {
+        Properties properties = new Properties();
+        try (FileInputStream input = new FileInputStream(configFilePath)) {
+            properties.load(input);
+        }
+        this.zipUrlForDictionary = properties.getProperty("zipUrlForDictionary");
+        this.targetFileName = properties.getProperty("targetFileName");
+    }
 
     // парсим строку в словарь в виде List<String>
     public List<String> getDictionary() throws IOException, FileNotFoundExceptionInZip {
