@@ -14,10 +14,6 @@ public class Main {
         try {
             List<String> words = dictionary.getDictionary();
 
-            // Выводим первые 10 слов для проверки
-            for (int i = 0; i < 10 && i < words.size(); i++) {
-                System.out.println(words.get(i));
-            }
         } catch (IOException e) {
             System.err.println("Ошибка ввода-вывода: " + e.getMessage());
         } catch (FileNotFoundExceptionInZip e) {

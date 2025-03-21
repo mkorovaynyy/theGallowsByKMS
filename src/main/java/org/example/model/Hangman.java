@@ -3,7 +3,7 @@ package org.example.model;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class Gallow {
+public class Hangman {
 
     private final String[] HANGMAN_STAGES = {
             """
@@ -71,7 +71,7 @@ public class Gallow {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Gallow gallows = (Gallow) o;
+        Hangman gallows = (Hangman) o;
         return Objects.deepEquals(HANGMAN_STAGES, gallows.HANGMAN_STAGES);
     }
 
