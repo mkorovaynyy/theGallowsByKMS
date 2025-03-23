@@ -21,14 +21,17 @@ public class Dictionary {
     // Конструктор, читающий параметры из конфигурационного файла
     public Dictionary(String configFilePath) throws IOException {
         Properties properties = new Properties();
-        try (FileInputStream input = new FileInputStream(configFilePath)) {
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream(configFilePath)) {
+            if (input == null) {
+                throw new IOException("Конфигурационный файл не найден: " + configFilePath);
+            }
             properties.load(input);
         }
         this.zipUrlForDictionary = properties.getProperty("zipUrlForDictionary");
         this.targetFileName = properties.getProperty("targetFileName");
     }
 
-    // парсим строку в словарь в виде List<String>
+    // Парсим строку в словарь в виде List<String>
     public List<String> getDictionary() throws IOException, FileNotFoundExceptionInZip {
         String line = getLineFromZipStream();
         if (line.isEmpty()) {
@@ -37,7 +40,7 @@ public class Dictionary {
         return Arrays.asList(line.split("\n"));
     }
 
-    // скачиваем zip и упаковываем в стрим зипов
+    // Скачиваем zip и упаковываем в стрим зипов
     private ZipInputStream downloadZipUrl() throws IOException {
         try {
             URL url = new URL(zipUrlForDictionary);
@@ -48,7 +51,7 @@ public class Dictionary {
         }
     }
 
-    // превращаем стрим зипов в строку
+    // Превращаем стрим зипов в строку
     private String getLineFromZipStream() throws IOException {
         try (ZipInputStream zipInputStream = downloadZipUrl()) {
             ZipEntry entry;
@@ -88,7 +91,8 @@ public class Dictionary {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Dictionary that = (Dictionary) o;
-        return Objects.equals(zipUrlForDictionary, that.zipUrlForDictionary) && Objects.equals(targetFileName, that.targetFileName);
+        return Objects.equals(zipUrlForDictionary, that.zipUrlForDictionary)
+                && Objects.equals(targetFileName, that.targetFileName);
     }
 
     @Override
