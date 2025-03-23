@@ -2,19 +2,20 @@ package org.example;
 
 import org.example.exception.FileNotFoundExceptionInZip;
 import org.example.service.Dictionary;
-import org.example.service.WordRandomiser;
+import org.example.service.WordRandomizer;
 
 import java.io.IOException;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+
         try {
             // Указываем путь к конфигурационному файлу
             String configFilePath = "config.properties";
 
             // Создаем объект WordRandomiser
-            WordRandomiser wordRandomiser = new WordRandomiser(configFilePath);
+            WordRandomizer wordRandomiser = new WordRandomizer(configFilePath);
 
             // Получаем словарь
             Dictionary dictionary = wordRandomiser.getDictionary();
