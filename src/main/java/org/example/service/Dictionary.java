@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -17,7 +16,7 @@ public class Dictionary {
     private String zipUrlForDictionary;
     private String targetFileName;
 
-    // Конструктор, читающий параметры из конфигурационного файла
+
     public Dictionary(String configFilePath) throws IOException {
         Properties properties = new Properties();
         try (InputStream input = getClass().getClassLoader().getResourceAsStream(configFilePath)) {
@@ -30,7 +29,7 @@ public class Dictionary {
         this.targetFileName = properties.getProperty("targetFileName");
     }
 
-    // Парсим строку в словарь в виде List<String>
+
     public List<String> getDictionary() throws IOException, FileNotFoundExceptionInZip {
         String line = getLineFromZipStream();
         if (line.isEmpty()) {
@@ -39,7 +38,7 @@ public class Dictionary {
         return Arrays.asList(line.split("\n"));
     }
 
-    // Скачиваем zip и упаковываем в стрим зипов
+
     private ZipInputStream downloadZipUrl() throws IOException {
         try {
             URL url = new URL(zipUrlForDictionary);
@@ -50,7 +49,7 @@ public class Dictionary {
         }
     }
 
-    // Превращаем стрим зипов в строку
+
     private String getLineFromZipStream() throws IOException {
         try (ZipInputStream zipInputStream = downloadZipUrl()) {
             ZipEntry entry;
@@ -67,7 +66,7 @@ public class Dictionary {
                 }
             }
         }
-        return ""; // Если файл не найден, возвращаем пустую строку
+        return "";
     }
 
     public String getZipUrlForDictionary() {
@@ -86,26 +85,6 @@ public class Dictionary {
         this.targetFileName = targetFileName;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Dictionary that = (Dictionary) o;
-        return Objects.equals(zipUrlForDictionary, that.zipUrlForDictionary)
-                && Objects.equals(targetFileName, that.targetFileName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(zipUrlForDictionary, targetFileName);
-    }
-
-    @Override
-    public String toString() {
-        return "Dictionary{" +
-                "zipUrlForDictionary='" + zipUrlForDictionary + '\'' +
-                ", targetFileName='" + targetFileName + '\'' +
-                '}';
-    }
 }
 
 

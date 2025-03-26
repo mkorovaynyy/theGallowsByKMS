@@ -12,7 +12,7 @@ public class WordRandomizer {
 
     public WordRandomizer(String configFilePath) throws IOException, FileNotFoundExceptionInZip {
         this.dictionary = new Dictionary(configFilePath);
-        this.random = new Random(dictionary.getDictionary().size() - 1);
+        this.random = new Random();
     }
 
     public Dictionary getDictionary() {
@@ -21,6 +21,6 @@ public class WordRandomizer {
 
     public String getRandomWord() throws FileNotFoundExceptionInZip, IOException {
         List<String> allWords = dictionary.getDictionary();
-        return allWords.get(random.nextInt());
+        return allWords.get(random.nextInt(allWords.size())).trim();
     }
 }
